@@ -41,7 +41,7 @@
             width="{{ cardWidth + 2 * gutter.x }}px">
               <div class="card">{{ ingredient.name }}</div>
           </foreignObject>
-          <line x1="{{ gutter.x + cardWidth }}px" y1="{{ (canvasHeight[$index] - cardHeight) / 2 + 0.5 * cardHeight}}px"
+          <line x1="{{ gutter.x + cardWidth }}px" y1="{{ (canvasHeight[$parent.$index] - cardHeight) / 2 + 0.5 * cardHeight}}px"
             x2="{{3 * gutter.x + cardWidth }}px" y2="{{ gutter.y + $index * (2 * gutter.y + cardHeight) + 0.5 * cardHeight}}px"
             stroke="black" stroke-width="2px"></line>
           <line x1="{{3 * gutter.x + 2 * cardWidth}}px" y1="{{ gutter.y + $index * (2 * gutter.y + cardHeight) + 0.5 * cardHeight}}px"
