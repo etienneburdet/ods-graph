@@ -17,31 +17,65 @@
   <div class="ng-cloak" ng-app="ods-widgets">
 
     <ods-dataset-context
-        context="ctx"
-        ctx-dataset="us-hospitals"
-        ctx-domain="discovery">
-
-      <h2>
-        {{ ctx.dataset.metas.records_count | number }} hospitals
-        <i class="fa fa-hospital-o" aria-hidden="true"></i>
-      </h2>
-
-      <ods-text-search context="ctx" placeholder="NY, Psychiatric, Health"></ods-text-search>
-      <ods-table context="ctx" sort="nom"></ods-table>
-      <ods-map context="ctx" location="12,34.07143,-118.39588" basemap="land"></ods-map>
+        context="cocktails"
+        cocktails-dataset="cocktails"
+        cocktails-domain="https://eburdet.opendatasoft.com/"
+        ng-init="cardHeight = 64; cardWidth = 128; gutter = {x: 64, y:16}; canvasHeight = []">
+      <div ods-results="items"
+        ods-results-context="cocktails"
+        ng-repeat="cocktail in items"
+        ng-init="canvasHeight[$index] = (cocktail.fields.ingredients|fromjson).length * (cardHeight + 2 * gutter.y)">
+        <svg width="960px" height="{{canvasHeight[$index]}}px">
+          <foreignObject x="{{ gutter.x }}px"
+            y="{{ (canvasHeight[$index] - cardHeight) / 2}}px"
+            height="{{ cardHeight + 2 * gutter.y }}px"
+            width="{{ cardWidth + 2 * gutter.x }}px">
+            <div class="card">
+              {{ cocktail.fields.name }}
+            </div>
+          </foreignObject>
+          <foreignObject ng-repeat-start="ingredient in cocktail.fields.ingredients|fromjson"
+            x="{{3 * gutter.x + cardWidth}}px"
+            y="{{ gutter.y + $index * (2 * gutter.y + cardHeight)}}px"
+            height="{{ cardHeight + 2 * gutter.y }}px"
+            width="{{ cardWidth + 2 * gutter.x }}px">
+              <div class="card">{{ ingredient.name }}</div>
+          </foreignObject>
+          <line x1="{{ gutter.x + cardWidth }}px" y1="{{ (canvasHeight[$index] - cardHeight) / 2 + 0.5 * cardHeight}}px"
+            x2="{{3 * gutter.x + cardWidth }}px" y2="{{ gutter.y + $index * (2 * gutter.y + cardHeight) + 0.5 * cardHeight}}px"
+            stroke="black" stroke-width="2px"></line>
+          <line x1="{{3 * gutter.x + 2 * cardWidth}}px" y1="{{ gutter.y + $index * (2 * gutter.y + cardHeight) + 0.5 * cardHeight}}px"
+            x2="{{5 * gutter.x + 2 * cardWidth}}px" y2="{{ gutter.y + $index * (2 * gutter.y + cardHeight) + 0.5 * cardHeight}}px"
+            stroke="black" stroke-width="2px"></line>
+          <foreignObject x="{{5 * gutter.x + 2 * cardWidth}}px"
+            y="{{ gutter.y + $index * (2 * gutter.y + cardHeight)}}px"
+            height="{{ cardHeight + 2 * gutter.y }}px"
+            width="{{ cardWidth + 2 * gutter.x }}px"
+            ng-repeat-end>
+              <div class="card">{{ ingredient.dose }}</div>
+          </foreignObject>
+        </svg>
+      </div>
 
     </ods-dataset-context>
-
+    <!-- <svg width="400px" height="{{item.subitems.length * 190}}px">
+    <line ng-repeat-start="subitem in item.subitems" x1="0" y1="{{(item.subitems.length * 190)/2}}px" x2="60px" y2="{{ 50 + 190 * $index}}px" stroke="black" stroke-width="2px"></line>
+    <foreignObject  x="60px" y="{{ 20 + $index * 190 }}px" height="170px" width="400px" ng-repeat-end>
+        <div class="card">
+            {{ subitem }}
+        </div>
+    </foreignObject>
+</svg> -->
   </div>
 
   <script src="//cdnjs.cloudflare.com/ajax/libs/jquery/2.1.4/jquery.min.js"></script>
   <script src="//cdnjs.cloudflare.com/ajax/libs/angular.js/1.4.7/angular.js"></script>
   <script src="//cdnjs.cloudflare.com/ajax/libs/angular.js/1.4.7/angular-sanitize.min.js"></script>
-  <script src="//cdnjs.cloudflare.com/ajax/libs/angular.js/1.4.7/i18n/angular-locale_fr-fr.js"></script>
-  <script src="//cdnjs.cloudflare.com/ajax/libs/moment.js/2.17.1/locale/fr.js"></script>
+  <!-- <script src="//cdnjs.cloudflare.com/ajax/libs/angular.js/1.4.7/i18n/angular-locale_fr-fr.js"></script>
+  <script src="//cdnjs.cloudflare.com/ajax/libs/moment.js/2.17.1/locale/fr.js"></script> -->
   <script type="text/javascript" src="//opendatasoft.github.io/ods-widgets/dist/ods-widgets.js"></script>
 
-  <script type="text/javascript">
+  <!-- <script type="text/javascript">
     var ods = angular.module('ods-widgets');
     ods.run(function(gettextCatalog) {
       gettextCatalog.setStrings('fr', {
@@ -78,7 +112,7 @@
           ]
           });
     });
-  </script>
+  </script> -->
 
 </body>
 

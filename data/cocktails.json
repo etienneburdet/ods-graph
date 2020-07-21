@@ -1,0 +1,33 @@
+[{
+		"name": "Dry Martini",
+		"ingredients": [{
+				"name": "Gin",
+				"dose": "1 2/3 oz"
+			},
+			{
+				"name": "Dry Vermouth",
+				"dose": "1/3 oz"
+			},
+			{
+				"name": "olive",
+				"dose": "1"
+			}
+		]
+	},
+	{
+		"name": "Spritz",
+		"ingredients": [{
+				"name": "Proseco",
+				"dose": "6cl"
+			},
+			{
+				"name": "Campari",
+				"dose": "4cl"
+			},
+			{
+				"name": "Soda water",
+				"dose": "6cl"
+			}
+		]
+	}
+]
