@@ -49,12 +49,11 @@
           <foreignObject
             ng-repeat-start="ingredient in ingredients"
             ng-init="
-              numIngredient = (cocktail.fields.ingredients|fromjson).length;
               stackHeight = ingredient.dose.length * (cardHeight + 2 * gutter.y);
               $parent.canvasHeight = canvasHeight + stackHeight;
             "
             x="{{3 * gutter.x + cardWidth}}px"
-            y="{{ (canvasHeight/numIngredient) * ($index + 0.5) - cardHeight / 2}}px"
+            y="{{ (canvasHeight/ingredients.length) * ($index + 0.5) - cardHeight / 2}}px"
             height="{{ cardHeight + 2 * gutter.y }}px"
             width="{{ cardWidth + 2 * gutter.x }}px">
               <div class="card">{{ ingredient.name || 1}}</div>
@@ -68,25 +67,25 @@
           -->
           <line ng-repeat-start="dose in ingredient.dose track by $index"
             x1="{{ 3 * gutter.x + 2 * cardWidth }}px"
-            y1="{{ (canvasHeight/numIngredient) * ($parent.$index + 0.5) }}px"
+            y1="{{ (canvasHeight/ingredients.length) * ($parent.$index + 0.5) }}px"
             x2="{{ 5 * gutter.x + 2 * cardWidth }}px"
-            y2="{{ gutter.y + ($parent.$index + $index) * (2 * gutter.y + cardHeight) + 0.5 * cardHeight }}px"
+            y2="{{ (canvasHeight/ingredients.length) * ($parent.$index) + canvasHeight/ingredients.length/ingredient.dose.length * $index  + gutter.y + cardHeight/2 }}px"
             stroke="black" stroke-width="2px"></line>
           <foreignObject
             ng-repeat-end
             x="{{5 * gutter.x + 2 * cardWidth}}px"
-            y="{{ (cardHeight + 2 * gutter.y) * $index + gutter.y}}px"
+            y="{{ (canvasHeight/ingredients.length) * ($parent.$index) + canvasHeight/ingredients.length/ingredient.dose.length * $index  + gutter.y }}px"
             height="{{ cardHeight + 2 * gutter.y }}px"
             width="{{ cardWidth + 2 * gutter.x }}px">
                 <div class="card">
-                  {{ stackHeight }}
+                  {{ dose }}
                 </div>
             </foreignObject>
           <line ng-repeat-end
             x1="{{ gutter.x + cardWidth }}px"
             y1="{{ (canvasHeight - cardHeight) / 2 + 0.5 * cardHeight}}px"
             x2="{{3 * gutter.x + cardWidth }}px"
-            y2="{{ (canvasHeight/numIngredient) * ($index + 0.5) }}px"
+            y2="{{ (canvasHeight/ingredients.length) * ($index + 0.5) }}px"
             stroke="black" stroke-width="2px"></line>
         </svg>
       </div>
