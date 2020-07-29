@@ -20,52 +20,80 @@
         context="cocktails"
         cocktails-dataset="cocktails"
         cocktails-domain="https://eburdet.opendatasoft.com/"
-        ng-init="cardHeight = 64; cardWidth = 128; gutter = {x: 64, y:16}; canvasHeight = []">
+        ng-init="cardHeight = 64; cardWidth = 128; gutter = {x: 64, y:16};">
+        <!--
+        ****
+        The base idea is to for this visualisation is to draw a grid on a an SVG canvas.
+        The element are then positionned absolutely on this canvas, based on the parameters off the grid: size of the card and size and spacing (gutter)
+        I strongly recommand to draw your grid with pen and paper :)
+        ***
+        -->
       <div ods-results="items"
         ods-results-context="cocktails"
         ng-repeat="cocktail in items"
-        ng-init="canvasHeight[$index] = (cocktail.fields.ingredients|fromjson).length * (cardHeight + 2 * gutter.y)">
-        <svg width="960px" height="{{canvasHeight[$index]}}px">
+        ng-init="canvasHeight = 0; ingredients = (cocktail.fields.ingredients|fromjson)">
+        <!-- Here we use one canvas per parent item, so that there is one graph per item (e.g. if there are multiple Gin cocktails, the card gin is rendered multiple times).
+        If you have multiple parent items that should connect to the same children (multiple links to gin) use one SVG and iterate on row and cols. -->
+        <svg width="960px" height="{{ canvasHeight }}px">
           <foreignObject x="{{ gutter.x }}px"
-            y="{{ (canvasHeight[$index] - cardHeight) / 2}}px"
+            y="{{ (canvasHeight - cardHeight) / 2}}px"
             height="{{ cardHeight + 2 * gutter.y }}px"
             width="{{ cardWidth + 2 * gutter.x }}px">
             <div class="card">
               {{ cocktail.fields.name }}
             </div>
           </foreignObject>
-          <foreignObject ng-repeat-start="ingredient in cocktail.fields.ingredients|fromjson"
+
+          <!-- Here we manually insert two cards, because we want precise fields in a precise order.
+          If you have values from a multivalued field, you can add one more ng-repeat to iterate on it. -->
+          <foreignObject
+            ng-repeat-start="ingredient in ingredients"
+            ng-init="numIngredient = (cocktail.fields.ingredients|fromjson).length"
             x="{{3 * gutter.x + cardWidth}}px"
-            y="{{ gutter.y + $index * (2 * gutter.y + cardHeight)}}px"
+            y="{{ (canvasHeight/numIngredient) * ($index + 0.5) - cardHeight / 2}}px"
             height="{{ cardHeight + 2 * gutter.y }}px"
             width="{{ cardWidth + 2 * gutter.x }}px">
-              <div class="card">{{ ingredient.name }}</div>
+              <div class="card">{{ ingredient.name || 1}}</div>
           </foreignObject>
-          <line x1="{{ gutter.x + cardWidth }}px" y1="{{ (canvasHeight[$parent.$index] - cardHeight) / 2 + 0.5 * cardHeight}}px"
-            x2="{{3 * gutter.x + cardWidth }}px" y2="{{ gutter.y + $index * (2 * gutter.y + cardHeight) + 0.5 * cardHeight}}px"
+          <!--
+          $parent.$index is the canvas number (parent element), $index is children number.
+          Likewise if you have a multivalued field, you would use:
+          * $parent.$parent.$index for the canvas
+          * $parent.$index is the first children (relative row)
+          * $index is n-th element (relative column)
+          -->
+          <line ng-repeat-start="dose in ingredient.dose track by $index"
+            ng-init="
+              stackHeight = (ingredient.dose|fromjson).length * (cardHeight + 2 * gutter.y);
+              $parent.$parent.canvasHeight = canvasHeight + stackHeight;
+            "
+            x1="{{ 3 * gutter.x + 2 * cardWidth }}px"
+            y1="{{ (canvasHeight/numIngredient) * ($index + 0.5) }}px"
+            x2="{{ 5 * gutter.x + 2 * cardWidth }}px"
+            y2="{{ gutter.y + ($parent.$index + $index) * (2 * gutter.y + cardHeight) + 0.5 * cardHeight }}px"
             stroke="black" stroke-width="2px"></line>
-          <line x1="{{3 * gutter.x + 2 * cardWidth}}px" y1="{{ gutter.y + $index * (2 * gutter.y + cardHeight) + 0.5 * cardHeight}}px"
-            x2="{{5 * gutter.x + 2 * cardWidth}}px" y2="{{ gutter.y + $index * (2 * gutter.y + cardHeight) + 0.5 * cardHeight}}px"
-            stroke="black" stroke-width="2px"></line>
-          <foreignObject x="{{5 * gutter.x + 2 * cardWidth}}px"
-            y="{{ gutter.y + $index * (2 * gutter.y + cardHeight)}}px"
+          <foreignObject
+            ng-repeat-end
+            x="{{5 * gutter.x + 2 * cardWidth}}px"
+            y="{{ (canvasHeight/numIngredient) * $parent.$index + (cardHeight + 2 * gutter.y) * $index + gutter.y + 0.5*cardHeight  }}px"
             height="{{ cardHeight + 2 * gutter.y }}px"
-            width="{{ cardWidth + 2 * gutter.x }}px"
-            ng-repeat-end>
-              <div class="card">{{ ingredient.dose }}</div>
-          </foreignObject>
+            width="{{ cardWidth + 2 * gutter.x }}px">
+                <div class="card">
+                  {{
+                    dose
+                  }}
+                </div>
+            </foreignObject>
+          <line ng-repeat-end
+            x1="{{ gutter.x + cardWidth }}px"
+            y1="{{ (canvasHeight - cardHeight) / 2 + 0.5 * cardHeight}}px"
+            x2="{{3 * gutter.x + cardWidth }}px"
+            y2="{{ (canvasHeight/numIngredient) * ($index + 0.5) }}px"
+            stroke="black" stroke-width="2px"></line>
         </svg>
       </div>
 
     </ods-dataset-context>
-    <!-- <svg width="400px" height="{{item.subitems.length * 190}}px">
-    <line ng-repeat-start="subitem in item.subitems" x1="0" y1="{{(item.subitems.length * 190)/2}}px" x2="60px" y2="{{ 50 + 190 * $index}}px" stroke="black" stroke-width="2px"></line>
-    <foreignObject  x="60px" y="{{ 20 + $index * 190 }}px" height="170px" width="400px" ng-repeat-end>
-        <div class="card">
-            {{ subitem }}
-        </div>
-    </foreignObject>
-</svg> -->
   </div>
 
   <script src="//cdnjs.cloudflare.com/ajax/libs/jquery/2.1.4/jquery.min.js"></script>
