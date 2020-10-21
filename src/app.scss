@@ -10,7 +10,6 @@
 
 .item-container {
   display: flex;
-  align-items: center;
   justify-content: flex-start;
 }
 
@@ -21,12 +20,19 @@
 }
 
 .item {
+  align-self: center;
   display: flex;
   justify-content: center;
   align-items: center;
   height: 60px;
   width: 100px;
   border: 1px solid;
+}
+
+.link-container {
+  height: 100%;
+  display: flex;
+  align-items: center;
 }
 
 .link {

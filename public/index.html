@@ -41,9 +41,13 @@
           <div class="sub-items">
             <div class="item-container"
               ng-repeat="ingredient in ingredients">
-              <div class="link"
-              ng-style="{'transform': 'skewY(' + (- 90 + ($index + 1) * 45) + 'deg) translateY(' + (60 - ($index + 1)*30) + 'px)'}">
-
+              <div class="link-container"
+                ng-style="{'transform': 'translateY(' + 50 * (1 - $index) + '%)'}">
+                <div class="link"
+                ng-style="{
+                  'transform': 'skewY(' + (- 90 + ($index + 1) * 180 / (ingredients.length + 1)) + 'deg)'
+                }">
+                </div>
               </div>
               <div class="item">
                 {{ ingredient.name }}
