@@ -34,60 +34,23 @@
         ng-init="ingredients = (cocktail.fields.ingredients|fromjson); canvasHeight = 0">
         <!-- Here we use one canvas per parent item, so that there is one graph per item (e.g. if there are multiple Gin cocktails, the card gin is rendered multiple times).
         If you have multiple parent items that should connect to the same children (multiple links to gin) use one SVG and iterate on row and cols. -->
-        <svg width="960px" height="{{ canvasHeight }}px">
-          <foreignObject x="{{ gutter.x }}px"
-            y="{{ (canvasHeight - cardHeight) / 2}}px"
-            height="{{ cardHeight + 2 * gutter.y }}px"
-            width="{{ cardWidth + 2 * gutter.x }}px">
-            <div class="card">
-              {{ cocktail.fields.name }}
-            </div>
-          </foreignObject>
+        <div class="item-container">
+          <div class="item">
+            {{ cocktail.fields.name }}
+          </div>
+          <div class="sub-items">
+            <div class="item-container"
+              ng-repeat="ingredient in ingredients">
+              <div class="link"
+              ng-style="{'transform': 'skewY(' + (- 90 + ($index + 1) * 45) + 'deg) translateY(' + (60 - ($index + 1)*30) + 'px)'}">
 
-          <!-- Here we manually insert two cards, because we want precise fields in a precise order.
-          If you have values from a multivalued field, you can add one more ng-repeat to iterate on it. -->
-          <foreignObject
-            ng-repeat-start="ingredient in ingredients"
-            ng-init="
-              stackHeight = ingredient.dose.length * (cardHeight + 2 * gutter.y);
-              $parent.canvasHeight = canvasHeight + stackHeight;
-            "
-            x="{{3 * gutter.x + cardWidth}}px"
-            y="{{ (canvasHeight/ingredients.length) * ($index + 0.5) - cardHeight / 2}}px"
-            height="{{ cardHeight + 2 * gutter.y }}px"
-            width="{{ cardWidth + 2 * gutter.x }}px">
-              <div class="card">{{ ingredient.name || 1}}</div>
-          </foreignObject>
-          <!--
-          $parent.$index is the canvas number (parent element), $index is children number.
-          Likewise if you have a multivalued field, you would use:
-          * $parent.$parent.$index for the canvas
-          * $parent.$index is the first children (relative row)
-          * $index is n-th element (relative column)
-          -->
-          <line ng-repeat-start="dose in ingredient.dose track by $index"
-            x1="{{ 3 * gutter.x + 2 * cardWidth }}px"
-            y1="{{ (canvasHeight/ingredients.length) * ($parent.$index + 0.5) }}px"
-            x2="{{ 5 * gutter.x + 2 * cardWidth }}px"
-            y2="{{ (canvasHeight/ingredients.length) * ($parent.$index) + canvasHeight/ingredients.length/ingredient.dose.length * $index  + gutter.y + cardHeight/2 }}px"
-            stroke="black" stroke-width="2px"></line>
-          <foreignObject
-            ng-repeat-end
-            x="{{5 * gutter.x + 2 * cardWidth}}px"
-            y="{{ (canvasHeight/ingredients.length) * ($parent.$index) + canvasHeight/ingredients.length/ingredient.dose.length * $index  + gutter.y }}px"
-            height="{{ cardHeight + 2 * gutter.y }}px"
-            width="{{ cardWidth + 2 * gutter.x }}px">
-                <div class="card">
-                  {{ dose }}
-                </div>
-            </foreignObject>
-          <line ng-repeat-end
-            x1="{{ gutter.x + cardWidth }}px"
-            y1="{{ (canvasHeight - cardHeight) / 2 + 0.5 * cardHeight}}px"
-            x2="{{3 * gutter.x + cardWidth }}px"
-            y2="{{ (canvasHeight/ingredients.length) * ($index + 0.5) }}px"
-            stroke="black" stroke-width="2px"></line>
-        </svg>
+              </div>
+              <div class="item">
+                {{ ingredient.name }}
+              </div>
+            </div>
+          </div>
+        </div>
       </div>
 
     </ods-dataset-context>

@@ -7,3 +7,30 @@
   width: 128px;
   height: 64px;
 }
+
+.item-container {
+  display: flex;
+  align-items: center;
+  justify-content: flex-start;
+}
+
+.sub-items {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+}
+
+.item {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  height: 60px;
+  width: 100px;
+  border: 1px solid;
+}
+
+.link {
+  height: 2px;
+  width: 60px;
+  background-color: black;
+}
